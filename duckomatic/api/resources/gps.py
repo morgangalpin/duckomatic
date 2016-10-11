@@ -1,7 +1,10 @@
 from flask import session, request
-from flask_socketio import Namespace, emit, join_room, leave_room, close_room, rooms, disconnect
+from flask_socketio import (
+    Namespace, emit, join_room, leave_room, close_room, rooms, disconnect)
 
-class Camera(Namespace):
+
+class Gps(Namespace):
+
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
         emit('my_response',
@@ -17,7 +20,7 @@ class Camera(Namespace):
         join_room(message['room'])
         session['receive_count'] = session.get('receive_count', 0) + 1
         emit('my_response',
-             {'data': 'In Camera rooms: ' + ', '.join(rooms()),
+             {'data': 'In Gps rooms: ' + ', '.join(rooms()),
               'count': session['receive_count']})
 
     def on_leave(self, message):
@@ -29,7 +32,8 @@ class Camera(Namespace):
 
     def on_close_room(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
-        emit('my_response', {'data': 'Room ' + message['room'] + ' is closing.',
+        emit('my_response', {'data': 'Room ' + message['room']
+                             + ' is closing.',
                              'count': session['receive_count']},
              room=message['room'])
         close_room(message['room'])
