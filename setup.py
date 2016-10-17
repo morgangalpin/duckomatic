@@ -271,7 +271,7 @@ setup_dict = dict(
     zip_safe=False,  # don't use eggs
     entry_points={
         'console_scripts': [
-            'duckomatic_cli = duckomatic.main:entry_point'
+            'duckomatic_cli = duckomatic.__main__:entry_point'
         ],
         # if you have a gui, use this
         # 'gui_scripts': [

@@ -8,7 +8,7 @@ import pytest
 parametrize = pytest.mark.parametrize
 
 # from duckomatic import metadata
-from duckomatic.platform.utils.publisher import (Publisher)
+from duckomatic.utils.publisher import (Publisher)
 
 
 class TestPublisher(object):

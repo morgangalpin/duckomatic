@@ -9,7 +9,7 @@ import pytest
 parametrize = pytest.mark.parametrize
 
 # from duckomatic import metadata
-from duckomatic.platform.utils.subscriber import (Subscriber, NoDataException)
+from duckomatic.utils.subscriber import (Subscriber, NoDataException)
 
 
 class TestSubscriber(object):

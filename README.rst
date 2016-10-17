@@ -2,6 +2,18 @@
  Python Project Template
 =========================
 
+Setup Instructions::
+        virtualenv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+Run the tests::
+        paver test_all
+
+Start the server::
+        python -m duckomatic
+
+
 TODO: Replace the readme contents with project appropriate text.
 
 

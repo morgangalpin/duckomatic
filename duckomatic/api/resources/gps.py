@@ -1,9 +1,16 @@
 from flask import session, request
 from flask_socketio import (
     Namespace, emit, join_room, leave_room, close_room, rooms, disconnect)
+from resource import Resource
 
 
-class Gps(Namespace):
+class Gps(Resource, Namespace):
+
+    def __init__(self, *vargs, **kwargs):
+        """ Constructor.
+        Initialize the parent classes.
+        """
+        super(Gps, self).__init__(*vargs, **kwargs)
 
     def on_my_event(self, message):
         session['receive_count'] = session.get('receive_count', 0) + 1
