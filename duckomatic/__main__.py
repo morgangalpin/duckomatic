@@ -5,8 +5,8 @@
 from __future__ import print_function
 
 import argparse
+import logging
 import os
-# import signal
 import sys
 
 import duckomatic.metadata as metadata
@@ -45,46 +45,52 @@ URL: <{url}>
         '-V', '--version',
         action='version',
         version='{0} {1}'.format(metadata.project, metadata.version))
+    arg_parser.add_argument(
+        '-d', '--debug',
+        action='store_true',
+        dest='debug')
 
-    arg_parser.parse_args(args=argv[1:])
+    args = arg_parser.parse_args(args=argv[1:])
 
-    print(epilog)
-
-    # Workaround for the werkzeug reloader removing the current directory from
-    # the path. It's nasty, but it works! Inspired by:
-    # https://github.com/mitsuhiko/flask/issues/1246
-    os.environ['PYTHONPATH'] = os.getcwd()
-
-    # Create the controllers and link the communication of the matching
-    # resources.
-    platform_controller = PlatformController()
     api_controller = ApiController()
-    platform_controller.add_subscriber_to_resource_publisher(
-        'camera', api_controller.get_resource_subscriber('camera'), 'feed')
-    platform_controller.add_subscriber_to_resource_publisher(
-        'gps', api_controller.get_resource_subscriber('gps'), 'feed')
-    platform_controller.add_resource_subscriber_to_publisher(
-        'rudder', api_controller.get_resource_publisher('rudder'), 'feed')
-    platform_controller.add_resource_subscriber_to_publisher(
-        'throttle', api_controller.get_resource_publisher('throttle'), 'feed')
+    platform_controller = PlatformController()
+    start_resources = os.environ.get('WERKZEUG_RUN_MAIN') or not args.debug
+    if start_resources:
+        logging.info('startup: pid %d is the active werkzeug' % os.getpid())
 
-    api_controller.run()
+        print(epilog)
 
-    # signal.signal(signal.SIGINT, signal_handler)
-    # print('Press Ctrl+C to terminate')
-    # signal.pause()
-    # main_controller.wait_until_finished()
+        # Create the controllers and link the communication of the matching
+        # resources.
+        platform_controller.add_subscriber_to_resource_publisher(
+            'camera', api_controller.get_resource_subscriber('camera'), 'feed')
+        platform_controller.add_subscriber_to_resource_publisher(
+            'gps', api_controller.get_resource_subscriber('gps'), 'feed')
+        platform_controller.add_resource_subscriber_to_publisher(
+            'rudder', api_controller.get_resource_publisher('rudder'), 'feed')
+        platform_controller.add_resource_subscriber_to_publisher(
+            'throttle', api_controller.get_resource_publisher('throttle'), 'feed')
+
+        platform_controller.start()
+    else:
+        logging.info('startup: pid %d is the werkzeug reloader' %
+                     os.getpid())
+
+        # Workaround for the werkzeug reloader removing the current directory from
+        # the path. It's nasty, but it works! Inspired by:
+        # https://github.com/mitsuhiko/flask/issues/1246
+        os.environ['PYTHONPATH'] = os.getcwd()
+
+    api_controller.start(start_resources, debug=args.debug)
+    api_controller.stop()
+    platform_controller.stop()
+
     return 0
 
 
 def entry_point():
     """Zero-argument entry point for use with setuptools/distribute."""
     raise SystemExit(main(sys.argv))
-
-
-def signal_handler(signal, frame):
-    print('You pressed Ctrl+C!')
-    sys.exit(0)
 
 
 if __name__ == '__main__':

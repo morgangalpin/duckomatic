@@ -1,7 +1,7 @@
 from flask import session, request
 from flask_socketio import (
     Namespace, emit, join_room, leave_room, close_room, rooms, disconnect)
-from resource import Resource
+from duckomatic.utils.resource import Resource
 
 
 class Throttle(Resource, Namespace):
