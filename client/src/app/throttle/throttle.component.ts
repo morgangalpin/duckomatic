@@ -15,7 +15,10 @@ export class ThrottleComponent implements OnInit {
   constructor(
     private throttleService: ThrottleService
   ) {
-    this.throttleService.onProcessThrottleEvent((data) => { console.log('ThrottleComponent.onProcessThrottleEvent("%o")', data); this.currentThrottle = data.num; });
+    this.throttleService.onProcessThrottleEvent((data) => {
+      console.log('ThrottleComponent.onProcessThrottleEvent("%o")', data);
+      this.currentThrottle = data.num;
+    });
   }
 
   ngOnInit() {

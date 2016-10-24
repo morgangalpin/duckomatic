@@ -53,37 +53,40 @@ URL: <{url}>
     args = arg_parser.parse_args(args=argv[1:])
 
     api_controller = ApiController()
-    platform_controller = PlatformController()
+    # platform_controller = PlatformController()
     start_resources = os.environ.get('WERKZEUG_RUN_MAIN') or not args.debug
     if start_resources:
+        logging.basicConfig(level=logging.DEBUG)
         logging.info('startup: pid %d is the active werkzeug' % os.getpid())
 
         print(epilog)
 
         # Create the controllers and link the communication of the matching
         # resources.
-        platform_controller.add_subscriber_to_resource_publisher(
-            'camera', api_controller.get_resource_subscriber('camera'), 'feed')
-        platform_controller.add_subscriber_to_resource_publisher(
-            'gps', api_controller.get_resource_subscriber('gps'), 'feed')
-        platform_controller.add_resource_subscriber_to_publisher(
-            'rudder', api_controller.get_resource_publisher('rudder'), 'feed')
-        platform_controller.add_resource_subscriber_to_publisher(
-            'throttle', api_controller.get_resource_publisher('throttle'), 'feed')
+        # platform_controller.add_subscriber_to_resource_publisher(
+        #     'camera', api_controller.get_resource_subscriber('camera'), 'feed')
+        # platform_controller.add_subscriber_to_resource_publisher(
+        #     'gps', api_controller.get_resource_subscriber('gps'), 'update')
+        # platform_controller.add_resource_subscriber_to_publisher(
+        #     'rudder', api_controller.get_resource_publisher('rudder'), 'feed')
+        # platform_controller.add_resource_subscriber_to_publisher(
+        #     'throttle', api_controller.get_resource_publisher('throttle'),
+        #     'feed')
 
-        platform_controller.start()
+        # platform_controller.socketio = api_controller._socketio
+        # platform_controller.start()
     else:
         logging.info('startup: pid %d is the werkzeug reloader' %
                      os.getpid())
 
-        # Workaround for the werkzeug reloader removing the current directory from
-        # the path. It's nasty, but it works! Inspired by:
+        # Workaround for the werkzeug reloader removing the current directory
+        # from the path. It's nasty, but it works! Inspired by:
         # https://github.com/mitsuhiko/flask/issues/1246
         os.environ['PYTHONPATH'] = os.getcwd()
 
     api_controller.start(start_resources, debug=args.debug)
     api_controller.stop()
-    platform_controller.stop()
+    # platform_controller.stop()
 
     return 0
 

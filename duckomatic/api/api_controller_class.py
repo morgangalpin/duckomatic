@@ -1,3 +1,4 @@
+import logging
 from flask import (Flask, render_template,
                    send_from_directory)
 from flask_socketio import (SocketIO)
@@ -5,6 +6,20 @@ from resources.camera import Camera
 from resources.gps import Gps
 from resources.rudder import Rudder
 from resources.throttle import Throttle
+
+
+def background_thread(socketio):
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        socketio.sleep(10)
+        count += 1
+        num = count % 5
+        logging.debug("Sending background message")
+        socketio.emit('feed',
+                      {'data': 'Server generated event',
+                          'count': count, 'num': num},
+                      namespace='/camera')
 
 
 class ApiController(object):
@@ -22,17 +37,17 @@ class ApiController(object):
 
         self._resources = {}
 
-        self._static_dir = 'client/static'
+        self._static_dir = '../../client/static'
         self._app = Flask(__name__, template_folder=self._static_dir)
-        self._app.config['SECRET_KEY'] = 'RoboDuck!'
+        self._app.config['SECRET_KEY'] = 'Duckomatic!'
         self._app.route('/', methods=['GET'])(self.index)
         self._app.route('/<path:filename>', methods=['GET'])(self.serve_static)
 
         self._socketio = SocketIO(self._app, async_mode=self._async_mode)
-        self.add_namespace_resource('camera', Camera('/camera'))
-        self.add_namespace_resource('gps', Gps('/gps'))
-        self.add_namespace_resource('rudder', Rudder('/rudder'))
-        self.add_namespace_resource('throttle', Throttle('/throttle'))
+        # self.add_namespace_resource('camera', Camera('/camera'))
+        # self.add_namespace_resource('gps', Gps('/gps'))
+        # self.add_namespace_resource('rudder', Rudder('/rudder'))
+        # self.add_namespace_resource('throttle', Throttle('/throttle'))
 
     # @app.route('/')
     def index(self):
@@ -47,13 +62,16 @@ class ApiController(object):
         if start_resources:
             for _, resource in self._resources.items():
                 resource.start()
-        self._socketio.run(self._app, debug=debug)
+            self._socketio.start_background_task(
+                target=background_thread, socketio=self._socketio)
+        self._socketio.run(self._app, debug=debug)  # , host='0.0.0.0'
 
     def stop(self):
         for _, resource in self._resources.items():
             resource.stop()
 
     def add_namespace_resource(self, resource_id, namespace_resource):
+        namespace_resource._socketio = self._socketio
         self._resources[resource_id] = namespace_resource
         self._socketio.on_namespace(namespace_resource)
 

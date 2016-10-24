@@ -1,3 +1,4 @@
+import logging
 import threading
 import time
 
@@ -24,10 +25,10 @@ class PlatformController(object):
         self._stop = threading.Event()
         self._stop.set()
 
-        self.add_resource('camera', Camera())
-        self.add_resource('gps', Gps())
-        self.add_resource('rudder', Rudder())
-        self.add_resource('throttle', Throttle())
+        # self.add_resource('camera', Camera())
+        # self.add_resource('gps', Gps())
+        # self.add_resource('rudder', Rudder())
+        # self.add_resource('throttle', Throttle())
 
     def run(self):
         """ Method that runs forever """
@@ -37,6 +38,16 @@ class PlatformController(object):
             # queue is in place.
             time.sleep(10)
             count += 1
+            data = {'data': 'Server generated event',
+                    'count': count, 'num': 2}
+            topic = 'feed'
+            namespace = '/camera'
+#             logging.debug('PlatformController: Sending: \
+# topic: "%s", \
+# data: "%s", \
+# namespace: "%s"' %
+#                           (topic, data, namespace))
+#             self.socketio.emit(topic, data, namespace='/camera')
             # self.update('test', {
             #             'message': 'Server generated event',
             #             'count': count,
