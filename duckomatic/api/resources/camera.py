@@ -15,14 +15,14 @@ class Camera(Resource, Namespace):
         super(Camera, self).__init__(*vargs, **kwargs)
         self._client_count = 0
 
-#     def handle_incoming_message(self, topic, data):
-#         if self._client_count > 0:
-#             logging.debug('%s: Client count: %d, Sending: \
-# topic: "%s", \
-# data: "%s"' %
-#                           (self.namespace, self._client_count, topic, data))
-#             self._socketio.emit(
-#                 topic, data, namespace=self.namespace)
+    def handle_incoming_message(self, topic, data):
+        if self._client_count > 0:
+            logging.debug('%s: Client count: %d, Sending: \
+topic: "%s", \
+data: "%s"' %
+                          (self.namespace, self._client_count, topic, data))
+            self._socketio.emit(
+                topic, data, namespace=self.namespace)
 
     def start(self):
         self.start_processing_incoming_messages()

@@ -1,4 +1,6 @@
+import eventlet
 import logging
+import time
 from flask import (Flask, render_template,
                    send_from_directory)
 from flask_socketio import (SocketIO)
@@ -7,19 +9,22 @@ from resources.gps import Gps
 from resources.rudder import Rudder
 from resources.throttle import Throttle
 
+logging.basicConfig(level=logging.DEBUG)
+eventlet.monkey_patch()
 
-def background_thread(socketio):
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        socketio.sleep(10)
-        count += 1
-        num = count % 5
-        logging.debug("Sending background message")
-        socketio.emit('feed',
-                      {'data': 'Server generated event',
-                          'count': count, 'num': num},
-                      namespace='/camera')
+
+# def background_thread(socketio):
+#     """Example of how to send server generated events to clients."""
+#     count = 0
+#     while True:
+#         count += 1
+#         num = count % 5
+#         logging.debug("Sending background message")
+#         socketio.emit('feed',
+#                       {'data': 'NEW! Server generated event',
+#                           'count': count, 'num': num},
+#                       namespace='/camera')
+#         time.sleep(10)
 
 
 class ApiController(object):
@@ -33,7 +38,7 @@ class ApiController(object):
         # Set this variable to "threading", "eventlet" or "gevent" to test the
         # different async modes, or leave it set to None for the application to
         # choose the best option based on installed packages.
-        self._async_mode = None
+        self._async_mode = "eventlet"
 
         self._resources = {}
 
@@ -44,7 +49,8 @@ class ApiController(object):
         self._app.route('/<path:filename>', methods=['GET'])(self.serve_static)
 
         self._socketio = SocketIO(self._app, async_mode=self._async_mode)
-        # self.add_namespace_resource('camera', Camera('/camera'))
+        # print("async_mode: %s" % self._socketio.async_mode)
+        self.add_namespace_resource('camera', Camera('/camera'))
         # self.add_namespace_resource('gps', Gps('/gps'))
         # self.add_namespace_resource('rudder', Rudder('/rudder'))
         # self.add_namespace_resource('throttle', Throttle('/throttle'))
@@ -60,10 +66,11 @@ class ApiController(object):
 
     def start(self, start_resources, debug=False):
         if start_resources:
+            logging.debug("Starting api resources")
             for _, resource in self._resources.items():
                 resource.start()
-            self._socketio.start_background_task(
-                target=background_thread, socketio=self._socketio)
+            # self._socketio.start_background_task(
+            #     target=background_thread, socketio=self._socketio)
         self._socketio.run(self._app, debug=debug)  # , host='0.0.0.0'
 
     def stop(self):

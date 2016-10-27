@@ -11,7 +11,8 @@ class Camera(Resource):
         self.count += 1
         return ('feed', {
             'url': 'fake://url',
-            'count': self.count
+            'count': self.count,
+            'data': 'fake camera data'
         })
 
     def start(self):

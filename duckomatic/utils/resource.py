@@ -1,4 +1,4 @@
-import logging
+# import logging
 import threading
 import time
 from duckomatic.utils.publisher import Publisher
@@ -56,11 +56,11 @@ class Resource(object):
 
     def process_incoming_messages(self):
         while not self.stopped():
-            logging.debug("%s: Getting next published message" %
-                          (self.__class__))
+            # logging.debug("%s: Getting next published message" %
+            #               (self.__class__))
             (topic, data) = self._subscriber.get_update()
-            logging.debug("%s: Received published message. Handling it." %
-                          (self.__class__))
+            # logging.debug("%s: Received published message. Handling it." %
+            #               (self.__class__))
             self.handle_incoming_message(topic, data)
 
     def start_polling_for_messages_to_publish(self, frequency_per_second):
@@ -71,10 +71,10 @@ class Resource(object):
     def poll_for_messages_to_publish(self, frequency_per_second):
         sleep_time = 1.0 / frequency_per_second
         while not self.stopped():
-            logging.debug("%s: Getting next message to publish" %
-                          (self.__class__))
+            # logging.debug("%s: Getting next message to publish" %
+            #               (self.__class__))
             (topic, data) = self.get_message_to_publish()
-            logging.debug("%s: Received message to publish. Publishing it." %
-                          (self.__class__))
+            # logging.debug("%s: Received message to publish. Publishing it." %
+            #               (self.__class__))
             self._publisher.update(topic, data)
             time.sleep(sleep_time)
