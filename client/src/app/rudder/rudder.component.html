@@ -29,6 +29,9 @@
           <md-card-title>Rudder</md-card-title>
         </md-card-title-group>
         <md-card-content>
-          <md-slider value= "0" md-discrete min="-3" max="3" step="0.5" [ngModel]="currentRudder" (ngModelChange)="setRudder($event)"></md-slider>
+          Direction:<br>{{direction}}
         </md-card-content>
+        <md-card-actions>
+          <md-slider value= "0" md-discrete min="-5" max="5" step="1" [ngModel]="rudder" (ngModelChange)="setRudder($event)"></md-slider>
+        </md-card-actions>
       </md-card>
