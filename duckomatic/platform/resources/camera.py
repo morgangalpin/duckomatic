@@ -16,4 +16,4 @@ class Camera(Resource):
         })
 
     def start(self):
-        self.start_polling_for_messages_to_publish(0.2)
+        self.start_polling_for_messages_to_publish(0.01)

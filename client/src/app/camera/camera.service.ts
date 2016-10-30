@@ -7,9 +7,6 @@ export class CameraService {
 
     namespace:string = 'camera';
     cameraEvent:string = 'feed';
-    // namespace:string = 'test';
-    // cameraEvent:string = 'my_response';
-    // socket: SocketIOClient.Socket;
 
     constructor(
         private socketService: SocketService

@@ -13,20 +13,6 @@ logging.basicConfig(level=logging.DEBUG)
 eventlet.monkey_patch()
 
 
-# def background_thread(socketio):
-#     """Example of how to send server generated events to clients."""
-#     count = 0
-#     while True:
-#         count += 1
-#         num = count % 5
-#         logging.debug("Sending background message")
-#         socketio.emit('feed',
-#                       {'data': 'NEW! Server generated event',
-#                           'count': count, 'num': num},
-#                       namespace='/camera')
-#         time.sleep(10)
-
-
 class ApiController(object):
     """
     Starts up and handles the websocket api.
@@ -52,7 +38,7 @@ class ApiController(object):
         # print("async_mode: %s" % self._socketio.async_mode)
         self.add_namespace_resource('camera', Camera('/camera'))
         # self.add_namespace_resource('gps', Gps('/gps'))
-        # self.add_namespace_resource('rudder', Rudder('/rudder'))
+        self.add_namespace_resource('rudder', Rudder('/rudder'))
         # self.add_namespace_resource('throttle', Throttle('/throttle'))
 
     # @app.route('/')
@@ -78,7 +64,6 @@ class ApiController(object):
             resource.stop()
 
     def add_namespace_resource(self, resource_id, namespace_resource):
-        namespace_resource._socketio = self._socketio
         self._resources[resource_id] = namespace_resource
         self._socketio.on_namespace(namespace_resource)
 

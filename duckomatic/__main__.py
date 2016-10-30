@@ -67,8 +67,8 @@ URL: <{url}>
             'camera', api_controller.get_resource_subscriber('camera'), 'feed')
         # platform_controller.add_subscriber_to_resource_publisher(
         #     'gps', api_controller.get_resource_subscriber('gps'), 'update')
-        # platform_controller.add_resource_subscriber_to_publisher(
-        #     'rudder', api_controller.get_resource_publisher('rudder'), 'feed')
+        platform_controller.add_resource_subscriber_to_publisher(
+            'rudder', api_controller.get_resource_publisher('rudder'), 'update')
         # platform_controller.add_resource_subscriber_to_publisher(
         #     'throttle', api_controller.get_resource_publisher('throttle'),
         #     'feed')

@@ -21,7 +21,7 @@ class Camera(Resource, Namespace):
 topic: "%s", \
 data: "%s"' %
                           (self.namespace, self._client_count, topic, data))
-            self._socketio.emit(
+            self.socketio.emit(
                 topic, data, namespace=self.namespace)
 
     def start(self):
