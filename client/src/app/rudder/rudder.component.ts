@@ -13,17 +13,14 @@ export class RudderComponent implements OnInit {
 
     constructor(
         private rudderService: RudderService
-    ) {
-        // this.rudderService.onProcessRudderEvent((data) => {
-        //     console.log('RudderComponent.onProcessRudderEvent("%o")', data);
-        //     this.currentRudder = data.num;
-        // });
-    }
+    ) {}
 
     setRudder(value: number) {
-        console.log("New rudder value: " + value)
-        this.currentRudder = value;
-        this.rudderService.setRudder(value);
+        if (value != this.currentRudder) {
+            console.log("Changing rudder value from: " + this.currentRudder + " to " + value)
+            this.currentRudder = value;
+            this.rudderService.setRudder(value);
+        }
     }
 
     ngOnInit() {

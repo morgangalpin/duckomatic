@@ -29,8 +29,8 @@ data: "%s"' %
 
     def on_connect(self):
         self._client_count += 1
-        emit('debug', {'data': 'Client connected',
-                       'count': self._client_count})
+        emit('clients', {'data': 'Client connected',
+                         'count': self._client_count})
 
     def on_disconnect(self):
         self._client_count -= 1

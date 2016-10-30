@@ -1,3 +1,4 @@
+import logging
 from flask import session, request
 from flask_socketio import (
     Namespace, emit, join_room, leave_room, close_room, rooms, disconnect)
@@ -18,12 +19,13 @@ class Rudder(Resource, Namespace):
 
     def on_connect(self):
         self._client_count += 1
-        emit('my_response', {'data': 'Connected', 'count': self._client_count})
+        emit('clients', {'data': 'Connected',
+                         'count': self._client_count})
 
     def on_disconnect(self):
         self._client_count -= 1
-        print('%s: Client disconnected. Client count = %d' %
-              (self.__class__, self._client_count))
+        logging.info('%s: Client disconnected. Client count = %d' %
+                     (self.__class__, self._client_count))
 
     # def on_my_broadcast_event(self, message):
     #     session['receive_count'] = session.get('receive_count', 0) + 1

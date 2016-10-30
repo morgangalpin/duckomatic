@@ -34,6 +34,9 @@ class Publisher(object):
         """
         Publish data to a topic for all subscriber's on that topic.
         """
+        # print(self._subscriptions)
         if topic in self._subscriptions:
+            # print('Sending data to topic: %s, which has %d subscribers' %
+            #       (topic, len(self._subscriptions[topic])))
             for subscriber in self._subscriptions[topic].itervalues():
                 subscriber.update(topic, data)
