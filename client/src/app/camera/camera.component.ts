@@ -18,7 +18,6 @@ export class CameraComponent implements OnInit {
     this.cameraService.onProcessCameraEvent((data) => {
       console.log('CameraComponent.onProcessCameraEvent("%o")', data);
       this.currentImageUrl = data.url + '/' + data.count;
-      // this.currentImageUrl = data.data;
     });
   }
 

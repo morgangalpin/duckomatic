@@ -37,7 +37,7 @@ class ApiController(object):
         self._socketio = SocketIO(self._app, async_mode=self._async_mode)
         # print("async_mode: %s" % self._socketio.async_mode)
         self.add_namespace_resource('camera', Camera('/camera'))
-        # self.add_namespace_resource('gps', Gps('/gps'))
+        self.add_namespace_resource('gps', Gps('/gps'))
         self.add_namespace_resource('rudder', Rudder('/rudder'))
         # self.add_namespace_resource('throttle', Throttle('/throttle'))
 

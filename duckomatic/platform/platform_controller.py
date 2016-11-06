@@ -26,7 +26,7 @@ class PlatformController(object):
         self._stop.set()
 
         self.add_resource('camera', Camera())
-        # self.add_resource('gps', Gps())
+        self.add_resource('gps', Gps())
         self.add_resource('rudder', Rudder())
         # self.add_resource('throttle', Throttle())
 
