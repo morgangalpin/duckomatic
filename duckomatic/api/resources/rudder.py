@@ -1,7 +1,7 @@
 import logging
-from flask import session, request
-from flask_socketio import (
-    Namespace, emit, join_room, leave_room, close_room, rooms, disconnect)
+from flask_socketio import (Namespace, emit)
+# , join_room, leave_room, close_room,
+#                         rooms, disconnect)
 from duckomatic.utils.resource import Resource
 
 

@@ -68,7 +68,8 @@ URL: <{url}>
         platform_controller.add_subscriber_to_resource_publisher(
             'gps', api_controller.get_resource_subscriber('gps'), 'feed')
         platform_controller.add_resource_subscriber_to_publisher(
-            'rudder', api_controller.get_resource_publisher('rudder'), 'update')
+            'rudder', api_controller.get_resource_publisher('rudder'),
+            'update')
         # platform_controller.add_resource_subscriber_to_publisher(
         #     'throttle', api_controller.get_resource_publisher('throttle'),
         #     'feed')

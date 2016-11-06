@@ -1,11 +1,10 @@
-import logging
+# import logging
 import threading
-import time
 
 from duckomatic.platform.resources.camera import Camera
 from duckomatic.platform.resources.gps import Gps
 from duckomatic.platform.resources.rudder import Rudder
-from duckomatic.platform.resources.throttle import Throttle
+# from duckomatic.platform.resources.throttle import Throttle
 
 
 class PlatformController(object):
