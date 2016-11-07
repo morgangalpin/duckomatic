@@ -6,7 +6,7 @@ from flask_socketio import (SocketIO)
 from resources.camera import Camera
 from resources.gps import Gps
 from resources.rudder import Rudder
-# from resources.throttle import Throttle
+from resources.throttle import Throttle
 
 logging.basicConfig(level=logging.DEBUG)
 eventlet.monkey_patch()
@@ -38,7 +38,7 @@ class ApiController(object):
         self.add_namespace_resource('camera', Camera('/camera'))
         self.add_namespace_resource('gps', Gps('/gps'))
         self.add_namespace_resource('rudder', Rudder('/rudder'))
-        # self.add_namespace_resource('throttle', Throttle('/throttle'))
+        self.add_namespace_resource('throttle', Throttle('/throttle'))
 
     # @app.route('/')
     def index(self):

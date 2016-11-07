@@ -12,7 +12,7 @@ import { SharedModule } from "./shared/shared.module";
 import { CameraModule } from './camera/camera.module';
 import { GpsModule } from './gps/gps.module';
 import { RudderModule } from './rudder/rudder.module';
-// import { ThrottleModule } from './throttle/throttle.module';
+import { ThrottleModule } from './throttle/throttle.module';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,8 @@ import { RudderModule } from './rudder/rudder.module';
     // Custom Modules
     CameraModule,
     GpsModule,
-    RudderModule
-    // ThrottleModule,
+    RudderModule,
+    ThrottleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

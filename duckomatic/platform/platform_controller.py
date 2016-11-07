@@ -4,7 +4,7 @@ import threading
 from duckomatic.platform.resources.camera import Camera
 from duckomatic.platform.resources.gps import Gps
 from duckomatic.platform.resources.rudder import Rudder
-# from duckomatic.platform.resources.throttle import Throttle
+from duckomatic.platform.resources.throttle import Throttle
 
 
 class PlatformController(object):
@@ -27,7 +27,7 @@ class PlatformController(object):
         self.add_resource('camera', Camera())
         self.add_resource('gps', Gps())
         self.add_resource('rudder', Rudder())
-        # self.add_resource('throttle', Throttle())
+        self.add_resource('throttle', Throttle())
 
 #     def run(self):
 #         """ Method that runs forever """
