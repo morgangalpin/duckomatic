@@ -53,7 +53,7 @@ URL: <{url}>
     args = arg_parser.parse_args(args=argv[1:])
 
     api_controller = ApiController()
-    platform_controller = PlatformController()
+    platform_controller = PlatformController(debug=args.debug)
     start_resources = os.environ.get('WERKZEUG_RUN_MAIN') or not args.debug
     if start_resources:
         logging.basicConfig(level=logging.DEBUG)

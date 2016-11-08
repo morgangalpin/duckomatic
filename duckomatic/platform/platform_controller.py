@@ -13,11 +13,12 @@ class PlatformController(object):
     until the application exits.
     """
 
-    def __init__(self):
+    def __init__(self, debug=false):
         """ Constructor.
         Creates a thread and starts it immediately.
         """
         super(PlatformController, self).__init__()
+        self.debug = debug
 
         self._resources = {}
         self._thread = None
@@ -26,43 +27,12 @@ class PlatformController(object):
 
         self.add_resource('camera', Camera())
         self.add_resource('gps', Gps())
-        self.add_resource('rudder', Rudder())
+        self.add_resource('rudder', Rudder(debug=self.debug))
         self.add_resource('throttle', Throttle())
-
-#     def run(self):
-#         """ Method that runs forever """
-#         count = 0
-#         while not self.stopped():
-#             # Just send a message periodically for now until reading from the
-#             # queue is in place.
-#             time.sleep(10)
-#             count += 1
-#             data = {'data': 'Server generated event',
-#                     'count': count, 'num': 2}
-#             topic = 'feed'
-#             namespace = '/camera'
-#             logging.debug('PlatformController: Sending: \
-# topic: "%s", \
-# data: "%s", \
-# namespace: "%s"' %
-#                           (topic, data, namespace))
-#             self.socketio.emit(topic, data, namespace='/camera')
-        # self.update('test', {
-        #             'message': 'Server generated event',
-        #             'count': count,
-        #             'namespace': '/test'
-        #             })
-        # message = self._messages.get()
-        # self.update_observers(message['name'], message['data'])
 
     def start(self):
         for _, resource in self._resources.items():
             resource.start()
-        # if self.stopped():
-        #     self._stop.clear()
-        #     self._thread = threading.Thread(target=self.run, args=())
-        #     self._thread.daemon = True
-        #     self._thread.start()
 
     def stop(self):
         for _, resource in self._resources.items():
