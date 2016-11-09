@@ -13,12 +13,16 @@ class PlatformController(object):
     until the application exits.
     """
 
-    def __init__(self, debug=false):
+    def __init__(self, fake=False):
         """ Constructor.
         Creates a thread and starts it immediately.
+
+        @param fake True to fake the integration to the actual Pi hardware.
+        Defaults to false which means to actually interact with the servos
+        and motors and whatnot.
         """
         super(PlatformController, self).__init__()
-        self.debug = debug
+        self.fake = fake
 
         self._resources = {}
         self._thread = None
@@ -27,7 +31,7 @@ class PlatformController(object):
 
         self.add_resource('camera', Camera())
         self.add_resource('gps', Gps())
-        self.add_resource('rudder', Rudder(debug=self.debug))
+        self.add_resource('rudder', Rudder(fake=self.fake))
         self.add_resource('throttle', Throttle())
 
     def start(self):
