@@ -53,7 +53,7 @@ class ApiController(object):
             logging.debug("Starting api resources")
             for _, resource in self._resources.items():
                 resource.start()
-        self._socketio.run(self._app, debug=debug)  # , host='0.0.0.0'
+        self._socketio.run(self._app, debug=debug, host='0.0.0.0')
 
     def stop(self):
         for _, resource in self._resources.items():

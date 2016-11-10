@@ -32,7 +32,6 @@ class Rudder(Resource):
             logging.info('Rudder data does not contain %s key' %
                          self.RUDDER_KEY)
             return
-        logging.debug('here')
         # Validate the requested rudder value.
         rudder = self.validate_rudder(
             data[self.RUDDER_KEY], self.MIN_RUDDER, self.MAX_RUDDER)
