@@ -5,9 +5,10 @@ from duckomatic.utils.resource import Resource
 
 
 class Rudder(Resource):
-    SERVO_MIN = 150  # Min pulse length out of 4096.
-    SERVO_MAX = 600  # Max pulse length out of 4096.
+    SERVO_MIN = 204  # Min pulse length out of 4096.
+    SERVO_MAX = 410  # Max pulse length out of 4096.
     SERVO_CHANNEL = 0
+    SERVO_PWM_FREQ_HZ = 50
     RUDDER_KEY = 'rudder'
     MIN_RUDDER = -5
     MAX_RUDDER = 5
@@ -22,6 +23,7 @@ class Rudder(Resource):
                 'submodules', 'Adafruit_Python_PCA9685'))
             import Adafruit_PCA9685
             self._pwm = Adafruit_PCA9685.PCA9685()
+            self._pwm.set_pwm_freq(SERVO_PWM_FREQ_HZ)
 
     def handle_incoming_message(self, topic, data):
         logging.debug('Received RUDDER message on topic "%s": %s' %
