@@ -23,7 +23,7 @@ class Rudder(Resource):
                 'submodules', 'Adafruit_Python_PCA9685'))
             import Adafruit_PCA9685
             self._pwm = Adafruit_PCA9685.PCA9685()
-            self._pwm.set_pwm_freq(SERVO_PWM_FREQ_HZ)
+            self._pwm.set_pwm_freq(self.SERVO_PWM_FREQ_HZ)
 
     def handle_incoming_message(self, topic, data):
         logging.debug('Received RUDDER message on topic "%s": %s' %
