@@ -6,6 +6,7 @@ from duckomatic.utils.resource import Resource
 
 
 class Throttle(Resource):
+    MOTOR_HAT_ADDRESS = 0x61
     MOTOR_NUM = 1
 
     def __init__(self, fake=False, *vargs, **kwargs):
@@ -18,7 +19,8 @@ class Throttle(Resource):
                 abspath(__file__))))),
                 'submodules', 'Adafruit-Motor-HAT-Python-Library'))
             import Adafruit_MotorHAT
-            self._motor_hat = Adafruit_MotorHAT.Adafruit_MotorHAT()
+            self._motor_hat = Adafruit_MotorHAT.Adafruit_MotorHAT(
+                addr=self.MOTOR_HAT_ADDRESS)
             self._motor_commands = DcMotorCommands(
                 adafruit_motor_hat=self._motor_hat)
         self._motor = self._motor_hat.getMotor(self.MOTOR_NUM)
