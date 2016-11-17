@@ -8,6 +8,11 @@ from duckomatic.utils.resource import Resource
 class Throttle(Resource):
     MOTOR_HAT_ADDRESS = 0x61
     MOTOR_NUM = 1
+    THROTTLE_KEY = 'throttle'
+    MIN_THROTTLE = 0
+    MAX_THROTTLE = 10
+    MOTOR_MIN = 0
+    MOTOR_MAX = 255
 
     def __init__(self, fake=False, *vargs, **kwargs):
         super(Throttle, self).__init__(*vargs, **kwargs)
@@ -33,12 +38,27 @@ class Throttle(Resource):
 
         atexit.register(turn_off_motors)
 
+    def start(self):
+        self.start_processing_incoming_messages()
+
     def handle_incoming_message(self, topic, data):
         logging.debug('Received THROTTLE message on topic "%s": %s' %
                       (topic, data))
 
-    def start(self):
-        self.start_processing_incoming_messages()
+        # Ensure the throttle value is given in the data.
+        if self.THROTTLE_KEY not in data:
+            logging.info('Throttle data does not contain %s key' %
+                         self.THROTTLE_KEY)
+            return
+        # Validate the requested throttle value.
+        throttle = self.validate_value(
+            'Throttle',
+            data[self.THROTTLE_KEY], self.MIN_THROTTLE, self.MAX_THROTTLE)
+
+        # Change the motor speed.
+        self._motor.setSpeed(self.scale_value(
+            throttle, self.MIN_THROTTLE, self.MAX_THROTTLE,
+            self.MOTOR_MIN, self.MOTOR_MAX))
 
 
 class FakeMotorHat(object):
