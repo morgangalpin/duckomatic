@@ -2,8 +2,6 @@
 --requirement requirements-dev.txt
 
 # Raspberry pi requirements.
-python-smbus
-i2c-tools
 
 # Servo hat requirements.
 adafruit-pca9685>=1.0.1
