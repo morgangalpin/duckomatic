@@ -5,6 +5,7 @@
 from __future__ import print_function
 
 import argparse
+import errno
 import logging
 import os
 import sys
@@ -13,6 +14,10 @@ import duckomatic.metadata as metadata
 
 from duckomatic.api.api_controller_class import ApiController
 from duckomatic.platform.platform_controller import PlatformController
+
+DATA_DIR = '/mnt/store/data'
+CAMERA1_IMAGE_DIR = os.path.join(DATA_DIR, 'camera1', 'image')
+CAMERA_IMAGE_FORMAT = '%d.jpg'
 
 
 def main(argv):
@@ -56,8 +61,14 @@ URL: <{url}>
 
     args = arg_parser.parse_args(args=argv[1:])
 
-    api_controller = ApiController()
-    platform_controller = PlatformController(fake=args.fake)
+    if not args.fake:
+        mkdir_p(CAMERA1_IMAGE_DIR)
+    api_controller = ApiController(
+        camera1_image_dir=CAMERA1_IMAGE_DIR,
+        camera_image_format=CAMERA_IMAGE_FORMAT)
+    platform_controller = PlatformController(
+        fake=args.fake, camera1_image_dir=CAMERA1_IMAGE_DIR,
+        camera_image_format=CAMERA_IMAGE_FORMAT)
     start_resources = os.environ.get('WERKZEUG_RUN_MAIN') or not args.debug
     if start_resources:
         logging.basicConfig(level=logging.DEBUG)
@@ -100,6 +111,15 @@ def entry_point():
     """Zero-argument entry point for use with setuptools/distribute."""
     raise SystemExit(main(sys.argv))
 
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 if __name__ == '__main__':
     entry_point()

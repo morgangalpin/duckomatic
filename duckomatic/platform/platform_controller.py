@@ -13,7 +13,8 @@ class PlatformController(object):
     until the application exits.
     """
 
-    def __init__(self, fake=False):
+    def __init__(self, camera1_image_dir,
+                 camera_image_format='%d.jpg', fake=False):
         """ Constructor.
         Creates a thread and starts it immediately.
 
@@ -29,7 +30,9 @@ class PlatformController(object):
         self._stop = threading.Event()
         self._stop.set()
 
-        self.add_resource('camera', Camera())
+        self.add_resource('camera', Camera(
+            fake=self.fake, image_dir=camera1_image_dir,
+            image_format=camera_image_format))
         self.add_resource('gps', Gps())
         self.add_resource('rudder', Rudder(fake=self.fake))
         self.add_resource('throttle', Throttle(fake=self.fake))

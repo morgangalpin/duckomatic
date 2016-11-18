@@ -1,5 +1,6 @@
 import eventlet
 import logging
+import os
 from flask import (Flask, render_template,
                    send_from_directory)
 from flask_socketio import (SocketIO)
@@ -16,8 +17,9 @@ class ApiController(object):
     """
     Starts up and handles the websocket api.
     """
+    CAMERA1_IMAGE_PATH = '/camera1/image'
 
-    def __init__(self):
+    def __init__(self, camera1_image_dir, camera_image_format='%d.jpg'):
         super(ApiController, self).__init__()
 
         # Set this variable to "threading", "eventlet" or "gevent" to test the
@@ -27,14 +29,20 @@ class ApiController(object):
 
         self._resources = {}
 
+        self._camera_image_format = camera_image_format
         self._static_dir = '../../client/static'
+        self._camera1_image_dir = camera1_image_dir
         self._app = Flask(__name__, template_folder=self._static_dir)
         self._app.config['SECRET_KEY'] = 'Duckomatic!'
         self._app.route('/', methods=['GET'])(self.index)
+        self._app.route(
+            os.path.join(self.CAMERA1_IMAGE_PATH, '/<int:imagenum>'),
+            methods=['GET'])(self.serve_camera_image)
         self._app.route('/<path:filename>', methods=['GET'])(self.serve_static)
 
         self._socketio = SocketIO(self._app, async_mode=self._async_mode)
-        self.add_namespace_resource('camera', Camera('/camera'))
+        self.add_namespace_resource('camera', Camera(
+            self.CAMERA1_IMAGE_PATH, '/camera'))
         self.add_namespace_resource('gps', Gps('/gps'))
         self.add_namespace_resource('rudder', Rudder('/rudder'))
         self.add_namespace_resource('throttle', Throttle('/throttle'))
@@ -43,6 +51,11 @@ class ApiController(object):
     def index(self):
         return render_template('index.html',
                                async_mode=self._socketio.async_mode)
+
+    # @app.route('/camera1/image/<int:imagenum>')
+    def serve_camera_image(self, imagenum):
+        return send_from_directory(self._camera1_image_dir,
+                                   self._camera_image_format % imagenum)
 
     # @app.route('/<path:filename>')
     def serve_static(self, filename):
