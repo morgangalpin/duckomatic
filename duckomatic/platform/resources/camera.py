@@ -11,13 +11,7 @@ class Camera(Resource):
         self._image_num = 0
         self._image_dir = image_dir
         self._image_format = image_format
-        if fake:
-            self._camera = FakePiCamera()
-        else:
-            # https://github.com/waveform80/picamera
-            import picamera
-            self._camera = picamera.PiCamera()
-            self._camera.resolution = (640, 480)
+        self._fake = fake
 
     def get_message_to_publish(self):
         self._image_num += 1
@@ -32,6 +26,14 @@ class Camera(Resource):
         })
 
     def start(self):
+        # Initialize the camera object.
+        if self._fake:
+            self._camera = FakePiCamera()
+        else:
+            # https://github.com/waveform80/picamera
+            import picamera
+            self._camera = picamera.PiCamera()
+            self._camera.resolution = (640, 480)
         self.start_polling_for_messages_to_publish(0.1)
 
 
