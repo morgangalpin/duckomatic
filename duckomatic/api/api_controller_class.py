@@ -54,11 +54,14 @@ class ApiController(object):
 
     # @app.route('/camera1/image/<int:imagenum>')
     def serve_camera_image(self, imagenum):
+        filename = self._camera_image_format % imagenum
+        logging.debug("Sending camera image: %s" % filename)
         return send_from_directory(self._camera1_image_dir,
-                                   self._camera_image_format % imagenum)
+                                   filename)
 
     # @app.route('/<path:filename>')
     def serve_static(self, filename):
+        logging.debug("Sending file: %s" % filename)
         return send_from_directory(self._static_dir, filename)
 
     def start(self, start_resources, debug=False):
