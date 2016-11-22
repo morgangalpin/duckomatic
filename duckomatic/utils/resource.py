@@ -72,9 +72,9 @@ class Resource(object):
             t1 = time.clock()
             self._publisher.update(topic, data)
             t2 = time.clock()
-            logging.debug("%s: get_message_to_publish() took %f seconds. \
-Publisher.update() took %f seconds." %
-                          (self.__class__, t1 - t0, t2 - t1))
+            logging.debug("%s: get_message_to_publish() took %fs. \
+Publisher.update() took %fs. Current time: %f" %
+                          (self.__class__, t1 - t0, t2 - t1, t2))
             sleep_time = max_sleep_time - (time.clock() - t0)
             if sleep_time > 0:
                 time.sleep(sleep_time)
