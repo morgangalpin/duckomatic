@@ -33,7 +33,7 @@ class Camera(Resource):
             # https://github.com/waveform80/picamera
             import picamera
             self._camera = picamera.PiCamera()
-            self._camera.resolution = (640, 480)
+            self._camera.resolution = (320, 240)
         self.start_polling_for_messages_to_publish(1)
 
 
