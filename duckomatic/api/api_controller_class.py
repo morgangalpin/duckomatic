@@ -61,7 +61,8 @@ class ApiController(object):
         filename = self._camera_image_format % imagenum
         logging.debug("Sending camera image: %s" % filename)
         return send_from_directory(self._camera1_image_dir,
-                                   filename)
+                                   filename, cache_timeout=60,
+                                   add_etags=False, mimetype='image/jpeg')
 
     def start(self, start_resources, debug=False):
         if start_resources:
