@@ -65,15 +65,19 @@ class Resource(object):
             (frequency_per_second,))
 
     def poll_for_messages_to_publish(self, frequency_per_second):
-        sleep_time = 1.0 / frequency_per_second
+        max_sleep_time = 1.0 / frequency_per_second
         while not self.stopped():
             t0 = time.clock()
             (topic, data) = self.get_message_to_publish()
             t1 = time.clock()
-            logging.debug("%s: get_message_to_publish() took %f seconds" %
-                          (self.__class__, t1 - t0))
             self._publisher.update(topic, data)
-            time.sleep(sleep_time)
+            t2 = time.clock()
+            logging.debug("%s: get_message_to_publish() took %f seconds. \
+Publisher.update() took %f seconds." %
+                          (self.__class__, t1 - t0, t2 - t1))
+            sleep_time = max_sleep_time - (time.clock() - t0)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
 
     @staticmethod
     def validate_value(label, value, min_value, max_value):
