@@ -56,11 +56,7 @@ class Resource(object):
 
     def process_incoming_messages(self):
         while not self.stopped():
-            # logging.debug("%s: Getting next published message" %
-            #               (self.__class__))
             (topic, data) = self._subscriber.get_update()
-            # logging.debug("%s: Received published message. Handling it." %
-            #               (self.__class__))
             self.handle_incoming_message(topic, data)
 
     def start_polling_for_messages_to_publish(self, frequency_per_second):
@@ -71,11 +67,11 @@ class Resource(object):
     def poll_for_messages_to_publish(self, frequency_per_second):
         sleep_time = 1.0 / frequency_per_second
         while not self.stopped():
-            # logging.debug("%s: Getting next message to publish" %
-            #               (self.__class__))
+            t0 = time.clock()
             (topic, data) = self.get_message_to_publish()
-            # logging.debug("%s: Received message to publish. Publishing it." %
-            #               (self.__class__))
+            t1 = time.clock()
+            logging.debug("%s: get_message_to_publish() took %f seconds" %
+                          (self.__class__, t1 - t0))
             self._publisher.update(topic, data)
             time.sleep(sleep_time)
 
