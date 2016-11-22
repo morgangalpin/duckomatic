@@ -18,6 +18,7 @@ from duckomatic.platform.platform_controller import PlatformController
 DATA_DIR = '/mnt/store/data'
 CAMERA1_IMAGE_DIR = os.path.join(DATA_DIR, 'camera1', 'image')
 CAMERA_IMAGE_FORMAT = '%d.jpg'
+CAMERA1_MAX_IMAGE_AGE_SECONDS = 60
 
 
 def main(argv):
@@ -65,10 +66,13 @@ URL: <{url}>
         mkdir_p(CAMERA1_IMAGE_DIR)
     api_controller = ApiController(
         camera1_image_dir=CAMERA1_IMAGE_DIR,
-        camera_image_format=CAMERA_IMAGE_FORMAT)
+        camera_image_format=CAMERA_IMAGE_FORMAT,
+        camera1_image_max_age_seconds=CAMERA1_MAX_IMAGE_AGE_SECONDS)
     platform_controller = PlatformController(
-        fake=args.fake, camera1_image_dir=CAMERA1_IMAGE_DIR,
-        camera_image_format=CAMERA_IMAGE_FORMAT)
+        fake=args.fake,
+        camera1_image_dir=CAMERA1_IMAGE_DIR,
+        camera_image_format=CAMERA_IMAGE_FORMAT,
+        camera1_image_max_age_seconds=CAMERA1_MAX_IMAGE_AGE_SECONDS)
     start_resources = os.environ.get('WERKZEUG_RUN_MAIN') or not args.debug
     if start_resources:
         logging.basicConfig(level=logging.DEBUG)

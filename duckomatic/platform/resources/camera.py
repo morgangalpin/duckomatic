@@ -5,16 +5,20 @@ from duckomatic.utils.resource import Resource
 
 
 class Camera(Resource):
-    MAX_IMAGE_AGE_SECONDS = 60
     TIME_BETWEEN_IMAGE_PURGES_SECONDS = 5
     FRAMES_PER_SECOND = 4
 
-    def __init__(self, image_dir, image_format='%d.jpg',
-                 fake=False, *vargs, **kwargs):
+    def __init__(self,
+                 image_dir,
+                 image_format='%d.jpg',
+                 max_image_age_seconds=60,
+                 fake=False,
+                 *vargs, **kwargs):
         super(Camera, self).__init__(*vargs, **kwargs)
         self._image_num = 0
         self._image_dir = image_dir
         self._image_format = image_format
+        self._max_image_age_seconds = max_image_age_seconds
         self._fake = fake
         self._remove_old_images_background_thread = None
 
@@ -51,7 +55,7 @@ class Camera(Resource):
 
     def remove_old_images_in_background(self):
         while not self.stopped():
-            self.remove_old_images(self.MAX_IMAGE_AGE_SECONDS)
+            self.remove_old_images(self._max_image_age_seconds)
             time.sleep(self.TIME_BETWEEN_IMAGE_PURGES_SECONDS)
 
     def remove_old_images(self, max_age_seconds):

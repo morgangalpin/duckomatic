@@ -19,7 +19,8 @@ class ApiController(object):
     """
     CAMERA1_IMAGE_PATH = '/camera1/image'
 
-    def __init__(self, camera1_image_dir, camera_image_format='%d.jpg'):
+    def __init__(self, camera1_image_dir, camera_image_format='%d.jpg',
+                 camera1_image_max_age_seconds=60):
         super(ApiController, self).__init__()
 
         # Set this variable to "threading", "eventlet" or "gevent" to test the
@@ -35,6 +36,7 @@ class ApiController(object):
                 os.path.dirname(os.path.abspath(__file__)))),
             'client', 'static')
         self._camera1_image_dir = camera1_image_dir
+        self._camera1_image_max_age_seconds = camera1_image_max_age_seconds
         self._app = Flask(
             __name__,
             static_folder=self._static_dir,
@@ -60,9 +62,11 @@ class ApiController(object):
     def serve_camera_image(self, imagenum):
         filename = self._camera_image_format % imagenum
         logging.debug("Sending camera image: %s" % filename)
-        return send_from_directory(self._camera1_image_dir,
-                                   filename, cache_timeout=60,
-                                   add_etags=False, mimetype='image/jpeg')
+        return send_from_directory(
+            self._camera1_image_dir,
+            filename,
+            cache_timeout=self._camera1_image_max_age_seconds,
+            add_etags=False, mimetype='image/jpeg')
 
     def start(self, start_resources, debug=False):
         if start_resources:
