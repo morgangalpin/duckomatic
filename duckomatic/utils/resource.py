@@ -67,15 +67,15 @@ class Resource(object):
     def poll_for_messages_to_publish(self, frequency_per_second):
         max_sleep_time = 1.0 / frequency_per_second
         while not self.stopped():
-            t0 = time.clock()
+            t0 = time.time()
             (topic, data) = self.get_message_to_publish()
-            t1 = time.clock()
+            t1 = time.time()
             self._publisher.update(topic, data)
-            t2 = time.clock()
+            t2 = time.time()
             logging.debug("%s: get_message_to_publish() took %fs. \
 Publisher.update() took %fs. Current time: %f" %
                           (self.__class__, t1 - t0, t2 - t1, t2))
-            sleep_time = max_sleep_time - (time.clock() - t0)
+            sleep_time = max_sleep_time - (time.time() - t0)
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
