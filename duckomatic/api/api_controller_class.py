@@ -1,7 +1,7 @@
 import eventlet
 import logging
 import os
-from flask import (Flask, render_template,
+from flask import (Flask,
                    send_from_directory)
 from flask_socketio import (SocketIO)
 from resources.camera import Camera

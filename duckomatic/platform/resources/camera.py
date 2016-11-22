@@ -1,9 +1,13 @@
 import logging
 import os
+import time
 from duckomatic.utils.resource import Resource
 
 
 class Camera(Resource):
+    MAX_IMAGE_AGE_SECONDS = 60
+    TIME_BETWEEN_IMAGE_PURGES_SECONDS = 5
+    FRAMES_PER_SECOND = 4
 
     def __init__(self, image_dir, image_format='%d.jpg',
                  fake=False, *vargs, **kwargs):
@@ -12,6 +16,7 @@ class Camera(Resource):
         self._image_dir = image_dir
         self._image_format = image_format
         self._fake = fake
+        self._remove_old_images_background_thread = None
 
     def get_message_to_publish(self):
         self._image_num += 1
@@ -34,7 +39,37 @@ class Camera(Resource):
             import picamera
             self._camera = picamera.PiCamera()
             self._camera.resolution = (320, 240)
-        self.start_polling_for_messages_to_publish(4)
+        self.remove_old_images(0)
+        self.start_remove_old_images_background_thread()
+        self.start_polling_for_messages_to_publish(self.FRAMES_PER_SECOND)
+
+    def start_remove_old_images_background_thread(self):
+        self._remove_old_images_background_thread = self._start_thread(
+            self._remove_old_images_background_thread,
+            self.remove_old_images_in_background,
+            ())
+
+    def remove_old_images_in_background(self):
+        while not self.stopped():
+            self.remove_old_images(self.MAX_IMAGE_AGE_SECONDS)
+            time.sleep(self.TIME_BETWEEN_IMAGE_PURGES_SECONDS)
+
+    def remove_old_images(self, max_age_seconds):
+        now = time.time()
+        if os.path.isdir(self._image_dir):
+            for filename in os.listdir(self._image_dir):
+                file_path = os.path.join(self._image_dir, filename)
+                try:
+                    if os.path.isfile(file_path) \
+                            and os.stat(file_path).st_mtime \
+                            < now - max_age_seconds:
+                        os.remove(file_path)
+                except Exception as e:
+                    logging.error(e)
+        else:
+            logging.debug(
+                'Not removing images from "%s" because it is not \
+a valid directory.' % self._image_dir)
 
 
 class FakePiCamera(object):
