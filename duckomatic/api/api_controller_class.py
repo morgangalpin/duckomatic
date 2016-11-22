@@ -34,9 +34,7 @@ class ApiController(object):
             os.path.dirname(os.path.dirname(
                 os.path.dirname(os.path.abspath(__file__)))),
             'client', 'static')
-        logging.debug('_static_dir: %s' % self._static_dir)
         self._camera1_image_dir = camera1_image_dir
-        logging.debug('_camera1_image_dir: %s' % self._camera1_image_dir)
         self._app = Flask(
             __name__,
             static_folder=self._static_dir,
@@ -46,8 +44,6 @@ class ApiController(object):
         self._app.add_url_rule(
             os.path.join(self.CAMERA1_IMAGE_PATH, '<int:imagenum>'),
             'camera1', self.serve_camera_image)
-        logging.debug(self._app.url_map)
-        logging.debug(self._app.view_functions)
 
         self._socketio = SocketIO(self._app, async_mode=self._async_mode)
         self.add_namespace_resource('camera', Camera(

@@ -34,7 +34,7 @@ class Camera(Resource):
             import picamera
             self._camera = picamera.PiCamera()
             self._camera.resolution = (640, 480)
-        self.start_polling_for_messages_to_publish(0.1)
+        self.start_polling_for_messages_to_publish(1)
 
 
 class FakePiCamera(object):
