@@ -42,7 +42,7 @@ class Camera(Resource):
             # https://github.com/waveform80/picamera
             import picamera
             self._camera = picamera.PiCamera()
-            self._camera.resolution = (320, 240)
+            self._camera.resolution = (160, 120)
         self.remove_old_images(0)
         self.start_remove_old_images_background_thread()
         self.start_polling_for_messages_to_publish(self.FRAMES_PER_SECOND)
