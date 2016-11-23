@@ -15,7 +15,7 @@ import duckomatic.metadata as metadata
 from duckomatic.api.api_controller_class import ApiController
 from duckomatic.platform.platform_controller import PlatformController
 
-DATA_DIR = '/mnt/store/data'
+DATA_DIR = '/mnt/ramdisk/data'
 CAMERA1_IMAGE_DIR = os.path.join(DATA_DIR, 'camera1', 'image')
 CAMERA_IMAGE_FORMAT = '%d.jpg'
 CAMERA1_MAX_IMAGE_AGE_SECONDS = 60
